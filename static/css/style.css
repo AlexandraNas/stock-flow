@@ -2,9 +2,9 @@
   --ink:#2B2521; --gray:#5F564F; --gray-light:#7D746D;
   --purple:#4A3328; --purple-2:#8A6A52; --purple-light:#F3EEE8;
   --border:#E8DFD6; --bg:#FAF8F5; --card:#FFFFFF;
-  --green:#5F7A4A; --green-bg:#EEF3E7;
+  --green:#566E43; --green-bg:#EEF3E7;
   --red:#A3402F; --red-bg:#F8ECE8;
-  --blue:#6E8CA0; --blue-bg:#EEF3F5;
+  --blue:#526978; --blue-bg:#EEF3F5;
   --radius:12px;
 }
 *{box-sizing:border-box;}
