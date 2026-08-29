@@ -101,13 +101,6 @@ mysql -u <user> -p < schema_mysql.sql
 
 Swapping the backend to MySQL would mean replacing the `sqlite3` calls in `database.py` with a MySQL driver (e.g. `PyMySQL` or `mysql-connector-python`) and updating the connection string — the rest of the app (routes, front end) doesn't need to change, since the queries are standard SQL.
 
-## Deployment notes
-
-This is a Flask app with a small SQLite file, so it needs real backend hosting rather than static hosting (unlike the portfolio site itself). Free/low-cost options that work well for a project like this: **Render**, **Railway**, **Fly.io**, or **PythonAnywhere**. Before deploying:
-
-- Set a real `STOCKFLOW_SECRET_KEY` environment variable (the app falls back to a dev key otherwise).
-- If deploying to a platform with an ephemeral filesystem, either use a persistent volume for `stockflow.db` or switch to MySQL/Postgres.
-
 ## Why this project
 
 Built to round out my portfolio alongside the NHS Patient Database (SQL/RBAC) and Beauty E-Commerce (front-end) projects, this one demonstrates a full-stack Python/Flask API with a real database behind it — end to end, from schema design to a working UI, themed around the same beauty retail space as my e-commerce project.
