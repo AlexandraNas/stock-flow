@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockFlow | Beauty Retail Inventory Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo"><i class="fa-solid fa-boxes-stacked"></i> StockFlow</div>
+    <p class="login-sub">Beauty retail inventory &amp; stock management</p>
+    <form id="loginForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-primary">Log In</button>
+      <p class="form-error" id="loginError" role="alert"></p>
+    </form>
+    <div class="demo-creds">
+      <strong>Demo logins</strong>
+      <div><span>Manager</span><code>a.nastase / Manager123!</code></div>
+      <div><span>Sales Assistant</span><code>j.smith / SalesFloor1!</code></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<div id="appShell" class="app-shell hidden">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><i class="fa-solid fa-boxes-stacked"></i> StockFlow</div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+      <button class="nav-item" data-view="products"><i class="fa-solid fa-tags"></i> Products</button>
+      <button class="nav-item" data-view="stock"><i class="fa-solid fa-right-left"></i> Log Stock</button>
+      <button class="nav-item" data-view="reports"><i class="fa-solid fa-chart-line"></i> Reports</button>
+      <button class="nav-item manager-only" data-view="users"><i class="fa-solid fa-user-gear"></i> Staff</button>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-user-info">
+        <strong id="sidebarUserName">—</strong>
+        <span id="sidebarUserRole">—</span>
+      </div>
+      <button id="logoutBtn" class="icon-btn" title="Log out"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="view-dashboard" class="view">
+      <h1>Dashboard</h1>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#F3EEE8;color:#4A3328"><i class="fa-solid fa-tags"></i></div>
+          <div><strong id="statProductCount">—</strong><span>Products tracked</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#EEF3E7;color:#5F7A4A"><i class="fa-solid fa-sterling-sign"></i></div>
+          <div><strong id="statStockValue">—</strong><span>Stock value</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#EEF3F5;color:#6E8CA0"><i class="fa-solid fa-cubes"></i></div>
+          <div><strong id="statTotalUnits">—</strong><span>Units in stock</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#F8ECE8;color:#A3402F"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div><strong id="statLowStock">—</strong><span>Low stock alerts</span></div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="panel">
+          <h2><i class="fa-solid fa-triangle-exclamation"></i> Low Stock Alerts</h2>
+          <div id="lowStockList" class="list"></div>
+        </div>
+        <div class="panel">
+          <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity</h2>
+          <div id="recentActivityList" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PRODUCTS ---------- -->
+    <section id="view-products" class="view hidden">
+      <div class="view-header">
+        <h1>Products</h1>
+        <button id="addProductBtn" class="btn btn-primary manager-only"><i class="fa-solid fa-plus"></i> Add Product</button>
+      </div>
+      <div class="table-wrap">
+        <table id="productsTable">
+          <thead>
+            <tr>
+              <th>SKU</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Reorder At</th><th class="manager-only">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- LOG STOCK ---------- -->
+    <section id="view-stock" class="view hidden">
+      <h1>Log Stock Movement</h1>
+      <div class="panel narrow">
+        <form id="stockForm">
+          <label for="stockProduct">Product</label>
+          <select id="stockProduct" required></select>
+
+          <label>Movement</label>
+          <div class="radio-row">
+            <label class="radio-pill"><input type="radio" name="movement_type" value="IN" checked> Stock In</label>
+            <label class="radio-pill"><input type="radio" name="movement_type" value="OUT"> Stock Out</label>
+          </div>
+
+          <label for="stockQuantity">Quantity</label>
+          <input type="number" id="stockQuantity" min="1" required>
+
+          <label for="stockReason">Reason</label>
+          <select id="stockReason" required>
+            <option value="delivery">Delivery received</option>
+            <option value="sale">Sale</option>
+            <option value="damaged">Damaged / written off</option>
+            <option value="correction">Stock count correction</option>
+            <option value="return">Customer return</option>
+          </select>
+
+          <label for="stockNote">Note (optional)</label>
+          <input type="text" id="stockNote" maxlength="255">
+
+          <button type="submit" class="btn btn-primary">Log Movement</button>
+          <p class="form-error" id="stockError" role="alert"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2><i class="fa-solid fa-list"></i> Recent Movements</h2>
+        <div class="table-wrap">
+          <table id="movementsTable">
+            <thead><tr><th>When</th><th>Product</th><th>Type</th><th>Qty</th><th>Reason</th><th>By</th><th>Note</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- REPORTS ---------- -->
+    <section id="view-reports" class="view hidden">
+      <h1>Reports</h1>
+      <div class="panel">
+        <h2><i class="fa-solid fa-ranking-star"></i> Top Selling Products</h2>
+        <div class="table-wrap">
+          <table id="topProductsTable">
+            <thead><tr><th>#</th><th>Product</th><th>SKU</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- STAFF (manager only) ---------- -->
+    <section id="view-users" class="view hidden">
+      <div class="view-header">
+        <h1>Staff</h1>
+        <button id="addUserBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Staff Account</button>
+      </div>
+      <div class="table-wrap">
+        <table id="usersTable">
+          <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Added</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ MODAL (add/edit product, add staff) ============ -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
