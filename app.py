@@ -20,7 +20,7 @@ app.secret_key = os.environ.get("STOCKFLOW_SECRET_KEY", "dev-secret-key-change-i
 VALID_REASONS = {"delivery", "sale", "damaged", "correction", "return"}
 
 
-# -- helpers --
+# ---------------------------------------------------------------- helpers --
 
 def login_required(view):
     @wraps(view)
@@ -55,14 +55,14 @@ def row_to_dict(row):
     return dict(row) if row is not None else None
 
 
-# -- frontend --
+# --------------------------------------------------------------- frontend --
 
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
 
 
-# -- auth --
+# -------------------------------------------------------------------- auth --
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -103,7 +103,7 @@ def me():
     return jsonify({"user": current_user_dict()})
 
 
-# -- products --
+# ---------------------------------------------------------------- products --
 
 @app.route("/api/categories", methods=["GET"])
 @login_required
@@ -421,6 +421,16 @@ def create_user():
 
 if __name__ == "__main__":
     is_new = database.init_db()
+    running_on_host = "PORT" in os.environ  # set by Render/Railway/etc, not present locally
     if is_new:
-        print("Created a fresh stockflow.db. Run `python seed.py` to add demo data.")
-    app.run(debug=True, port=5050)
+        print("Created a fresh stockflow.db.")
+        if running_on_host:
+            # No terminal access to run `python seed.py` by hand on a hosting
+            # platform, so seed the demo data automatically on first boot.
+            import seed
+            seed.run()
+            print("Auto-seeded demo data for the live deployment.")
+        else:
+            print("Run `python seed.py` to add demo data.")
+    port = int(os.environ.get("PORT", 5050))
+    app.run(host="0.0.0.0", port=port, debug=not running_on_host)
