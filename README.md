@@ -4,6 +4,8 @@ A full-stack inventory & stock management system built for a small beauty retail
 
 Built with a Python/Flask REST API on the back end and vanilla HTML/CSS/JS on the front end, with role-based access control for **Manager** and **Sales Assistant** accounts — the same RBAC pattern used in my [NHS Patient Database](../nhs-patient-database) project.
 
+Live site: https://stock-flow-k3hy.onrender.com
+
 ## Features
 
 - **Authentication** — cookie-based session login, passwords hashed with Werkzeug's `generate_password_hash`.
