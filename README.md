@@ -103,4 +103,4 @@ Swapping the backend to MySQL would mean replacing the `sqlite3` calls in `datab
 
 ## Why this project
 
-Built to round out my portfolio alongside the NHS Patient Database (SQL/RBAC) and Beauty E-Commerce (front-end) projects, this one demonstrates a full-stack Python/Flask API with a real database behind it — end to end, from schema design to a working UI, themed around the same beauty retail space as my e-commerce project.
+Built to round out my portfolio alongside the NHS Patient Database (SQL/RBAC) and Beauty E-Commerce (front-end) projects, this one demonstrates a full-stack Python/Flask API with a real database behind it, from schema design to a working UI, themed around the same beauty retail space as my e-commerce project.
